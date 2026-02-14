@@ -1,6 +1,7 @@
 import 'package:auth/config/config.dart';
 import 'package:auth/database/database.dart';
 import 'package:auth/logger/logger.dart';
+import 'package:auth/service/hash_service.dart';
 
 // DI контейнер хранит общие зависимости приложения и отвечает за их инициализацию.
 final class DiContainer {
@@ -12,6 +13,9 @@ final class DiContainer {
 
   /// База данных приложения.
   late final AppDatabase database;
+
+  /// Сервис для хэширования паролей.
+  late final HashService hashService;
 
   Future<void> load() async {
     try {
@@ -26,6 +30,9 @@ final class DiContainer {
       database = AppDatabase(this);
       // Проверяем доступность базы данных.
       await AppDatabase.hasDbConnection(this);
+
+      // Создаем сервис для хэширования паролей.
+      hashService = HashService(config);
     } on Object catch (error, stackTrace) {
       logger.error('Ошибка при создании DI контейнера', error, stackTrace);
       rethrow;

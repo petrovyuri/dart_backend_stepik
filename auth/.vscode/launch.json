@@ -18,7 +18,8 @@
                 "DB_NAME": "auth",
                 "DB_USER": "auth",
                 "DB_PASSWORD": "auth",
-                "DB_PORT": "9001"
+                "DB_PORT": "9001",
+                "SALT": "secret_salt" // <--- Новое
             }
         }
     ]

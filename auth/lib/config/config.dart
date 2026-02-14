@@ -30,6 +30,9 @@ final class Config {
   /// Порт базы данных.
   late final int dbPort;
 
+  /// Соль для хэширования паролей.
+  late final String salt;
+
   /// Загружает конфигурацию из переменных окружения и логирует результат.
   Future<void> load() async {
     logger.info('Загрузка конфигурации');
@@ -42,6 +45,7 @@ final class Config {
       dbUser = _getEnv('DB_USER');
       dbPassword = _getEnv('DB_PASSWORD');
       dbPort = int.parse(_getEnv('DB_PORT'));
+      salt = _getEnv('SALT');
     } catch (e) {
       // Дублируем ошибку в лог и пробрасываем наружу, чтобы остановить запуск.
       logger.error('Ошибка при загрузке конфигурации', e, StackTrace.current);
@@ -70,7 +74,8 @@ final class Config {
         ..debug('Имя базы данных: $dbName')
         ..debug('Пользователь базы данных: $dbUser')
         ..debug('Пароль базы данных: $dbPassword')
-        ..debug('Порт базы данных: $dbPort');
+        ..debug('Порт базы данных: $dbPort')
+        ..debug('Соль для хэширования паролей: $salt');
     }
   }
 }
