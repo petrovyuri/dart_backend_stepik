@@ -1,4 +1,5 @@
 import 'package:data/config/config.dart';
+import 'package:data/database/database.dart' show AppDatabase;
 import 'package:data/logger/logger.dart';
 
 // DI контейнер хранит общие зависимости приложения и отвечает за их инициализацию.
@@ -7,6 +8,7 @@ final class DiContainer {
   final AppLogger logger;
 
   late final Config config;
+  late final AppDatabase database;
 
   Future<void> load() async {
     try {
@@ -17,6 +19,11 @@ final class DiContainer {
       logger.isStage = config.isStage;
       // Печатаем итоговые значения конфигурации в лог.
       config.showConfig();
+      // Создаем базу данных.
+      database = AppDatabase(this);
+      // Тестовая проверка соединения с БД.
+      // TODO: убрать после тестов
+      await AppDatabase.hasDbConnection(this);
     } on Object catch (error, stackTrace) {
       logger.error('Ошибка при создании DI контейнера', error, stackTrace);
       rethrow;
