@@ -18,7 +18,9 @@
                 "DB_NAME": "data",
                 "DB_USER": "data",
                 "DB_PASSWORD": "data",
-                "DB_PORT": "9003"
+                "DB_PORT": "9003",
+                "JWT_SECRET": "secret_jwt_secret",
+                "INTERNAL_SECRET": "secret_internal_secret"
             }
         }
     ]

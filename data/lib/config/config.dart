@@ -30,6 +30,12 @@ final class Config {
   /// Порт базы данных.
   late final int dbPort;
 
+  /// Секрет для парсинга JWT токена
+  late final String JWTSecret;
+
+  /// Секрет для межсервисных запросов
+  late final String internalSecret;
+
   /// Загружает конфигурацию из переменных окружения и логирует результат.
   Future<void> load() async {
     logger.info('Загрузка конфигурации');
@@ -42,6 +48,8 @@ final class Config {
       dbUser = _getEnv('DB_USER');
       dbPassword = _getEnv('DB_PASSWORD');
       dbPort = int.parse(_getEnv('DB_PORT'));
+      JWTSecret = _getEnv('JWT_SECRET');
+      internalSecret = _getEnv('INTERNAL_SECRET');
     } catch (e) {
       // Дублируем ошибку в лог и пробрасываем наружу, чтобы остановить запуск.
       logger.error('Ошибка при загрузке конфигурации', e, StackTrace.current);
@@ -70,7 +78,9 @@ final class Config {
         ..debug('DB Name: $dbName')
         ..debug('DB User: $dbUser')
         ..debug('DB Password: $dbPassword')
-        ..debug('DB Port: $dbPort');
+        ..debug('DB Port: $dbPort')
+        ..debug('JWT Secret: $JWTSecret')
+        ..debug('Internal Secret: $internalSecret');
     }
   }
 }
