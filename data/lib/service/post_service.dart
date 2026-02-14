@@ -51,4 +51,19 @@ class PostService {
       rethrow;
     }
   }
+
+  /// Удаляем пост
+  Future<void> deletePost(int postId, int userId) async {
+    try {
+      // Создаем запрос на удаление поста
+      final query = di.database.delete(di.database.post)
+        ..where((t) => t.id.equals(postId) & t.authorId.equals(userId));
+      // Выполняем запрос
+      await query.go();
+      di.logger.info('Пост удален: postId=$postId, userId=$userId');
+    } on Object catch (e, stackTrace) {
+      di.logger.error('Ошибка при удалении поста из базе данных: $e', e, stackTrace);
+      rethrow;
+    }
+  }
 }

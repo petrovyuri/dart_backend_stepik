@@ -9,7 +9,8 @@ import 'package:shelf_router/shelf_router.dart';
 
 part 'health_check.dart';
 part 'create_post.dart';
-part 'get_post.dart'; // <--- НОВОЕ
+part 'get_post.dart';
+part 'delete_post.dart'; // <--- НОВОЕ
 
 class AppHandler {
   AppHandler(DiContainer di) : _di = di;
@@ -25,7 +26,8 @@ class AppHandler {
       ..get('/health', (request) => _healthCheckHandler(request, _di))
       ..post('/posts', (request) => _createPostHandler(request, _di))
       // <id> - это параметр, который будет передаваться в функцию _getPostHandler
-      ..get('/posts/<id>', (request, id) => _getPostHandler(request, _di, id)); // <--- НОВОЕ
+      ..get('/posts/<id>', (request, id) => _getPostHandler(request, _di, id))
+      ..delete('/posts/<id>', (request, id) => _deletePostHandler(request, _di, id)); // <--- НОВОЕ
 
     // Основной pipeline с JWT
     final mainPipeline = Pipeline().addMiddleware(jwtMiddleware.handler).addHandler(mainRouter.call);
