@@ -15,6 +15,21 @@ final class Config {
   /// Флаг, указывающий на работу в stage-режиме (расширенное логирование).
   late final bool isStage;
 
+  /// Хост базы данных.
+  late final String dbHost;
+
+  /// Имя базы данных.
+  late final String dbName;
+
+  /// Пользователь базы данных.
+  late final String dbUser;
+
+  /// Пароль базы данных.
+  late final String dbPassword;
+
+  /// Порт базы данных.
+  late final int dbPort;
+
   /// Загружает конфигурацию из переменных окружения и логирует результат.
   Future<void> load() async {
     logger.info('Загрузка конфигурации');
@@ -22,6 +37,11 @@ final class Config {
       // Берём значения из окружения и сохраняем их в поля класса.
       port = int.parse(_getEnv('PORT'));
       isStage = _getEnv('IS_STAGE') == 'true';
+      dbHost = _getEnv('DB_HOST');
+      dbName = _getEnv('DB_NAME');
+      dbUser = _getEnv('DB_USER');
+      dbPassword = _getEnv('DB_PASSWORD');
+      dbPort = int.parse(_getEnv('DB_PORT'));
     } catch (e) {
       // Дублируем ошибку в лог и пробрасываем наружу, чтобы остановить запуск.
       logger.error('Ошибка при загрузке конфигурации', e, StackTrace.current);
@@ -45,7 +65,12 @@ final class Config {
       logger
         ..debug('Конфигурация:')
         ..debug('Порт: $port')
-        ..debug('Статус: stage');
+        ..debug('Статус: stage')
+        ..debug('Хост базы данных: $dbHost')
+        ..debug('Имя базы данных: $dbName')
+        ..debug('Пользователь базы данных: $dbUser')
+        ..debug('Пароль базы данных: $dbPassword')
+        ..debug('Порт базы данных: $dbPort');
     }
   }
 }
