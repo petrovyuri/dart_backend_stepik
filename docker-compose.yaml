@@ -8,15 +8,15 @@ services:
     ports:
       # Внешний порт берется из переменной окружения,
       # внутренний 5432 - стандартный порт PostgreSQL
-      - "${AUTH_DB_EXTERNAL_PORT}:5432"
+      - "${DB_PORT}:5432"
     # Переменные окружения для контейнера
     environment:
       # Пароль суперпользователя PostgreSQL (из переменной окружения)
-      - POSTGRES_PASSWORD=${AUTH_DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       # Имя пользователя PostgreSQL (из переменной окружения)
-      - POSTGRES_USER=${AUTH_DB_USER}
+      - POSTGRES_USER=${DB_USER}
       # Имя базы данных, которая будет создана при первом запуске (из переменной окружения)
-      - POSTGRES_DB=${AUTH_DB_NAME}
+      - POSTGRES_DB=${DB_NAME}
     # Docker образ для использования
     # (PostgreSQL версии 15 на базе Alpine Linux)
     image: postgres:15-alpine
@@ -30,6 +30,58 @@ services:
     networks:
       # Подключение к сети my_network для взаимодействия с другими сервисами
       - my_network
+
+  # Сервис аутентификации
+  auth:
+    build:
+      # Контекст сборки (директория с Dockerfile)
+      context: ./auth
+      # Имя Dockerfile
+      dockerfile: Dockerfile
+    # Имя контейнера
+    container_name: auth
+    # Маппинг портов: внешний_порт:внутренний_порт
+    ports:
+      - "${EXTERNAL_PORT}:${PORT}"
+    # Переменные окружения для контейнера
+    environment:
+      # Хост базы данных
+      - DB_HOST=${DB_HOST}
+      # Порт базы данных
+      - DB_PORT=${DB_PORT}
+      # Имя базы данных
+      - DB_NAME=${DB_NAME}
+      # Имя пользователя БД
+      - DB_USER=${DB_USER}
+      # Пароль пользователя БД
+      - DB_PASSWORD=${DB_PASSWORD}
+      # Секрет для подписи JWT токенов
+      - JWT_SECRET=${JWT_SECRET}
+      # Срок действия Access токена
+      - JWT_ACCESS_EXP=${JWT_ACCESS_EXP}
+      # Срок действия Refresh токена
+      - JWT_REFRESH_EXP=${JWT_REFRESH_EXP}
+      # Секрет для внутреннего взаимодействия между микросервисами
+      - INTERNAL_SECRET=${INTERNAL_SECRET}
+      # Путь для запроса данных (endpoint)
+      - DATA_REQUEST=${DATA_REQUEST}
+      # Хост сервиса данных
+      - DATA_HOST=${DATA_HOST}
+      # Порт сервиса данных
+      - DATA_PORT=${DATA_PORT}
+      # Флаг окружения (true для стейджинга/тестирования)
+      - IS_STAGE=${IS_STAGE}
+      # Порт, на котором будет запущен сервис
+      - PORT=${PORT}
+      # Соль для хеширования (например, паролей)
+      - SALT=${SALT}
+    # Сети, к которым подключен контейнер
+    networks:
+      - my_network
+    # Зависимость от сервиса db_auth
+    # Это означает, что сервис auth будет запущен только после запуска сервиса db_auth
+    depends_on:
+      - db_auth
 
 # Секция определения сетей Docker
 # Сети позволяют контейнерам общаться друг с другом
