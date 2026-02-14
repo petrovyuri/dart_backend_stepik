@@ -2,6 +2,7 @@ import 'package:data/config/config.dart';
 import 'package:data/database/database.dart' show AppDatabase;
 import 'package:data/logger/logger.dart';
 import 'package:data/service/jwt_service.dart';
+import 'package:data/service/post_service.dart';
 
 // DI контейнер хранит общие зависимости приложения и отвечает за их инициализацию.
 final class DiContainer {
@@ -11,6 +12,7 @@ final class DiContainer {
   late final Config config;
   late final AppDatabase database;
   late final JwtService jwtService;
+  late final PostService postService; // <--- НОВОЕ
 
   Future<void> load() async {
     try {
@@ -28,6 +30,8 @@ final class DiContainer {
       await AppDatabase.hasDbConnection(this);
       // Создаем сервис для работы с JWT
       jwtService = JwtService(this);
+      // Создаем сервис для работы с постами
+      postService = PostService(this); // <--- НОВОЕ
     } on Object catch (error, stackTrace) {
       logger.error('Ошибка при создании DI контейнера', error, stackTrace);
       rethrow;
