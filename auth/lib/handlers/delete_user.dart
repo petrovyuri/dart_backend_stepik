@@ -31,6 +31,7 @@ Future<Response> _processDeleteUser(int userId, DiContainer di) async {
         await HandlerUtil.bodyToJson(message: 'Пользователь не найден', code: CodeAction.userNotFoundById),
       );
     }
+    await _processDeleteUserPosts(userId, di);
     return Response.ok(
       await HandlerUtil.bodyToJson(message: 'Пользователь успешно удален', code: CodeAction.userDeleted),
     );
@@ -42,5 +43,17 @@ Future<Response> _processDeleteUser(int userId, DiContainer di) async {
         code: CodeAction.parseErrorInUserRequest,
       ),
     );
+  }
+}
+
+/// Удаляет все посты пользователя через API сервиса data
+Future<void> _processDeleteUserPosts(int userId, DiContainer di) async {
+  try {
+    // Удаляем посты пользователя через API сервиса data
+    await di.dataService.deleteUserPostsViaApi(userId);
+    di.logger.info('Посты пользователя $userId удалены через API');
+  } on Object catch (e, stackTrace) {
+    // Логируем ошибку
+    di.logger.error('Ошибка при удалении постов пользователя: $e', e, stackTrace);
   }
 }

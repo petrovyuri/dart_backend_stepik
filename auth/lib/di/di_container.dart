@@ -2,6 +2,7 @@ import 'package:auth/config/config.dart';
 import 'package:auth/database/database.dart';
 import 'package:auth/logger/logger.dart';
 import 'package:auth/service/crypto_service.dart';
+import 'package:auth/service/data_service.dart';
 import 'package:auth/service/hash_service.dart';
 import 'package:auth/service/jwt_service.dart';
 import 'package:auth/service/user_service.dart';
@@ -29,7 +30,8 @@ final class DiContainer {
   /// Сервис для работы с пользователями.
   late final UserService userService;
 
-  /// <--- Новое
+  /// Сервис для работы с API сервиса data.
+  late final DataService dataService; // <--- Новое
 
   Future<void> load() async {
     try {
@@ -53,8 +55,8 @@ final class DiContainer {
       jwtService = JwtService(this);
       // Создаем сервис для работы с пользователями.
       userService = UserService(this);
-
-      /// <--- Новое
+      // Создаем сервис для работы с API сервиса data.
+      dataService = DataService(this); // <--- Новое
     } on Object catch (error, stackTrace) {
       logger.error('Ошибка при создании DI контейнера', error, stackTrace);
       rethrow;

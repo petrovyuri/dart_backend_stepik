@@ -20,9 +20,13 @@
                 "DB_PASSWORD": "auth",
                 "DB_PORT": "9001",
                 "SALT": "secret_salt",
-                "JWT_SECRET": "secret_jwt_secret", // <--- Новое
-                "JWT_ACCESS_EXP": "2", // <--- Новое
-                "JWT_REFRESH_EXP": "5" // <--- Новое
+                "JWT_SECRET": "secret_jwt_secret",
+                "JWT_ACCESS_EXP": "2",
+                "JWT_REFRESH_EXP": "5",
+                "DATA_REQUEST": "/users/posts/",
+                "DATA_PORT": "9002",
+                "DATA_HOST": "localhost",
+                "INTERNAL_SECRET": "secret_internal_secret"
             }
         }
     ]
