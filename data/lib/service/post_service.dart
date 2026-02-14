@@ -26,4 +26,29 @@ class PostService {
       rethrow;
     }
   }
+
+  /// Получаем пост по id
+  Future<PostData?> getPost(int postId, int userId) async {
+    try {
+      di.logger.info('Получение поста: postId=$postId, userId=$userId');
+      // Создаем запрос на получение поста
+      final query = di.database.select(di.database.post)
+        ..where((t) => t.id.equals(postId) & t.authorId.equals(userId))
+        ..limit(1);
+      // Выполняем запрос
+      final posts = await query.get();
+      // Если пост не найден
+      if (posts.isEmpty) {
+        // Возвращаем null
+        di.logger.info('Пост не найден: postId=$postId, userId=$userId');
+        return null;
+      }
+      di.logger.info('Получен пост: postId=$postId, userId=$userId');
+      // Возвращаем пост
+      return posts.first;
+    } on Object catch (e, stackTrace) {
+      di.logger.error('Ошибка при получении поста из базе данных: $e', e, stackTrace);
+      rethrow;
+    }
+  }
 }
