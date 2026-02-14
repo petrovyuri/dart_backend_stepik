@@ -14,7 +14,8 @@ part 'sign_up.dart';
 part 'sign_in.dart';
 part 'get_user.dart';
 part 'update_user.dart';
-part 'delete_user.dart'; // Новое
+part 'delete_user.dart';
+part 'refresh_token.dart'; // Новое
 
 /// Компонент верхнего уровня, который собирает и конфигурирует все HTTP‑маршруты приложения.
 ///
@@ -43,7 +44,7 @@ final class AppHandler {
     final protectedRouter = Router()
       ..get('/user', (request) => _getUserHandler(request, di))
       ..patch('/user', (request) => _updateUserHandler(request, di))
-      ..delete('/user', (request) => _deleteUserHandler(request, di)); // Новое
+      ..delete('/user', (request) => _deleteUserHandler(request, di));
 
     // Оборачиваем защищенные маршруты в JWT middleware
     final protectedHandler = Pipeline().addMiddleware(jwtMiddleware.handler).addHandler(protectedRouter.call);
@@ -58,6 +59,7 @@ final class AppHandler {
       ..get('/health', (request) => _healthHandler(request, di))
       ..post('/sign-up', (request) => _signUpHandler(request, di))
       ..post('/sign-in', (request) => _signInHandler(request, di))
+      ..post('/refresh-token', (request) => _refreshTokenHandler(request, di)) // Новое
       // Защищенные маршруты (требуют JWT)
       ..mount('/auth', protectedHandler);
 
