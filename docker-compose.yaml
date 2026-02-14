@@ -113,6 +113,21 @@ services:
       # Подключение к сети my_network для взаимодействия с другими сервисами
       - my_network
 
+  # Сервис Redis
+  redis:
+    # Имя контейнера
+    container_name: redis
+    # Docker образ для использования
+    # (Redis версии 7 на базе Alpine Linux)
+    image: redis:7-alpine
+    # Маппинг портов: внешний_порт:внутренний_порт
+    ports:
+      - "${REDIS_EXTERNAL_PORT}:${REDIS_PORT}"
+    # Сети, к которым подключен контейнер
+    networks:
+      # Подключение к сети my_network для взаимодействия с другими сервисами
+      - my_network
+
 # Секция определения сетей Docker
 # Сети позволяют контейнерам общаться друг с другом
 networks:
