@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:auth/database/database.dart';
 import 'package:auth/di/di_container.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 part 'health.dart';
+part 'sign_up.dart';
 
 /// Компонент верхнего уровня, который собирает и конфигурирует все HTTP‑маршруты приложения.
 ///
@@ -28,7 +31,12 @@ final class AppHandler {
     // Регистрируем маршруты для простых эндпоинтов.
     //
     // GET /health — простой health‑check, реализован в части `health.dart`.
-    final router = Router()..get('/health', (request) => _healthHandler(request, di));
+    // POST /sign-up — регистрация нового пользователя, реализован в части `sign_up.dart`.
+    final router = Router()
+      ..get('/health', (request) => _healthHandler(request, di))
+      ..post('/sign-up', (request) => _signUpHandler(request, di));
+
+    /// <--- Новый маршрут
 
     // Оборачиваем хэндлеры в middleware:
     // - `logRequests()` — логирует каждый HTTP‑запрос и ответ.
