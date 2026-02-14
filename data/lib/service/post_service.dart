@@ -66,4 +66,22 @@ class PostService {
       rethrow;
     }
   }
+
+  /// Получаем список всех постов пользователя с пагинацией
+  Future<List<PostData>> getPosts(int userId, {int limit = 10, int offset = 0}) async {
+    try {
+      di.logger.info('Получение списка постов: userId=$userId, limit=$limit, offset=$offset');
+
+      // Создаем запрос: выбираем посты юзера, сортируем по ID (новые сверху) и ограничиваем выборку
+      final query = di.database.select(di.database.post)
+        ..where((t) => t.authorId.equals(userId))
+        ..orderBy([(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)])
+        ..limit(limit, offset: offset);
+
+      return await query.get();
+    } on Object catch (e, stackTrace) {
+      di.logger.error('Ошибка при получении списка постов из БД: $e', e, stackTrace);
+      rethrow;
+    }
+  }
 }
