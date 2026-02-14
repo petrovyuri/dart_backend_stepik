@@ -6,6 +6,7 @@ import 'package:auth/handlers/code_action.dart';
 import 'package:auth/handlers/handler_utils.dart';
 import 'package:auth/handlers/request_ext.dart';
 import 'package:auth/middleware/jwt_middleware.dart';
+import 'package:auth/middleware/rate_limit_middleware.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
@@ -15,7 +16,7 @@ part 'sign_in.dart';
 part 'get_user.dart';
 part 'update_user.dart';
 part 'delete_user.dart';
-part 'refresh_token.dart'; // Новое
+part 'refresh_token.dart';
 
 /// Компонент верхнего уровня, который собирает и конфигурирует все HTTP‑маршруты приложения.
 ///
@@ -39,6 +40,8 @@ final class AppHandler {
   Handler get handler {
     // Создаем middleware для JWT авторизации
     final jwtMiddleware = JwtMiddleware(di);
+    // Создаем middleware для ограничения количества запросов
+    final rateLimitMiddleware = RateLimitMiddleware(di); // Новое
 
     // Защищенные маршруты (требуют JWT)
     final protectedRouter = Router()
@@ -65,7 +68,10 @@ final class AppHandler {
 
     // Оборачиваем хэндлеры в middleware:
     // - `logRequests()` — логирует каждый HTTP‑запрос и ответ.
-    // В дальнейшем сюда можно добавлять авторизацию, CORS, обработку ошибок и др.
-    return Pipeline().addMiddleware(logRequests()).addHandler(router.call);
+    // - `rateLimitMiddleware.handler` — ограничивает частоту запросов (глобально).
+    return Pipeline()
+        .addMiddleware(logRequests())
+        .addMiddleware(rateLimitMiddleware.handler) // Новое
+        .addHandler(router.call);
   }
 }
