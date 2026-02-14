@@ -2,13 +2,16 @@ import 'dart:convert';
 
 import 'package:auth/database/database.dart';
 import 'package:auth/di/di_container.dart';
-import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
 import 'package:auth/handlers/code_action.dart';
 import 'package:auth/handlers/handler_utils.dart';
+import 'package:shelf/shelf.dart';
+import 'package:shelf_router/shelf_router.dart';
 
 part 'health.dart';
 part 'sign_up.dart';
+part 'sign_in.dart';
+
+/// <--- Новый part для sign_in.dart
 
 /// Компонент верхнего уровня, который собирает и конфигурирует все HTTP‑маршруты приложения.
 ///
@@ -36,7 +39,8 @@ final class AppHandler {
     // POST /sign-up — регистрация нового пользователя, реализован в части `sign_up.dart`.
     final router = Router()
       ..get('/health', (request) => _healthHandler(request, di))
-      ..post('/sign-up', (request) => _signUpHandler(request, di));
+      ..post('/sign-up', (request) => _signUpHandler(request, di))
+      ..post('/sign-in', (request) => _signInHandler(request, di));
 
     /// <--- Новый маршрут
 
