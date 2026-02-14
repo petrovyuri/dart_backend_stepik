@@ -111,4 +111,30 @@ class PostService {
       rethrow;
     }
   }
+
+  /// Удаляет все посты пользователя.
+  /// Используется при каскадном удалении аккаунта.
+  /// Возвращает количество удаленных постов.
+  Future<int> deletePostsByUserId(int userId) async {
+    try {
+      di.logger.info('Запрос на удаление всех постов пользователя: userId=$userId');
+
+      // Создаем запрос на удаление всех постов, где автором является указанный пользователь
+      final query = di.database.delete(di.database.post)..where((t) => t.authorId.equals(userId));
+
+      // Выполняем запрос и получаем количество удаленных строк
+      final deletedCount = await query.go();
+
+      di.logger.info('Удалено постов ($deletedCount) для пользователя: userId=$userId');
+
+      // Инвалидируем кеш постов пользователя
+      await di.cacheService.invalidateUserPostsCache(userId);
+      di.logger.info('Кеш постов пользователя инвалидирован после массового удаления: userId=$userId');
+
+      return deletedCount;
+    } on Object catch (e, stackTrace) {
+      di.logger.error('Ошибка при массовом удалении постов пользователя из БД: $userId, $e', e, stackTrace);
+      rethrow;
+    }
+  }
 }
