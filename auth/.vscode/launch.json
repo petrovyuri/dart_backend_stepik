@@ -19,7 +19,10 @@
                 "DB_USER": "auth",
                 "DB_PASSWORD": "auth",
                 "DB_PORT": "9001",
-                "SALT": "secret_salt" // <--- Новое
+                "SALT": "secret_salt",
+                "JWT_SECRET": "secret_jwt_secret", // <--- Новое
+                "JWT_ACCESS_EXP": "2", // <--- Новое
+                "JWT_REFRESH_EXP": "5" // <--- Новое
             }
         }
     ]

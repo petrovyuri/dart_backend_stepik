@@ -33,6 +33,15 @@ final class Config {
   /// Соль для хэширования паролей.
   late final String salt;
 
+  /// Секретный ключ для JWT.
+  late final String jwtSecret;
+
+  /// Время жизни access токена в минутах.
+  late final int jwtAccessExp;
+
+  /// Время жизни refresh токена в минутах.
+  late final int jwtRefreshExp;
+
   /// Загружает конфигурацию из переменных окружения и логирует результат.
   Future<void> load() async {
     logger.info('Загрузка конфигурации');
@@ -46,6 +55,9 @@ final class Config {
       dbPassword = _getEnv('DB_PASSWORD');
       dbPort = int.parse(_getEnv('DB_PORT'));
       salt = _getEnv('SALT');
+      jwtSecret = _getEnv('JWT_SECRET');
+      jwtAccessExp = int.parse(_getEnv('JWT_ACCESS_EXP'));
+      jwtRefreshExp = int.parse(_getEnv('JWT_REFRESH_EXP'));
     } catch (e) {
       // Дублируем ошибку в лог и пробрасываем наружу, чтобы остановить запуск.
       logger.error('Ошибка при загрузке конфигурации', e, StackTrace.current);
@@ -75,7 +87,10 @@ final class Config {
         ..debug('Пользователь базы данных: $dbUser')
         ..debug('Пароль базы данных: $dbPassword')
         ..debug('Порт базы данных: $dbPort')
-        ..debug('Соль для хэширования паролей: $salt');
+        ..debug('Соль для хэширования паролей: $salt')
+        ..debug('Секретный ключ для JWT: $jwtSecret')
+        ..debug('Время жизни access токена: $jwtAccessExp')
+        ..debug('Время жизни refresh токена: $jwtRefreshExp');
     }
   }
 }
