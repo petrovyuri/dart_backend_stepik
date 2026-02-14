@@ -20,7 +20,9 @@
                 "DB_PASSWORD": "data",
                 "DB_PORT": "9003",
                 "JWT_SECRET": "secret_jwt_secret",
-                "INTERNAL_SECRET": "secret_internal_secret"
+                "INTERNAL_SECRET": "secret_internal_secret",
+                "REDIS_HOST": "localhost",
+                "REDIS_PORT": "6379"
             }
         }
     ]

@@ -1,6 +1,7 @@
 import 'package:data/config/config.dart';
 import 'package:data/database/database.dart' show AppDatabase;
 import 'package:data/logger/logger.dart';
+import 'package:data/service/cache_service.dart';
 import 'package:data/service/jwt_service.dart';
 import 'package:data/service/post_service.dart';
 
@@ -12,7 +13,8 @@ final class DiContainer {
   late final Config config;
   late final AppDatabase database;
   late final JwtService jwtService;
-  late final PostService postService; // <--- НОВОЕ
+  late final PostService postService;
+  late final CacheService cacheService; // <--- НОВОЕ
 
   Future<void> load() async {
     try {
@@ -31,7 +33,11 @@ final class DiContainer {
       // Создаем сервис для работы с JWT
       jwtService = JwtService(this);
       // Создаем сервис для работы с постами
-      postService = PostService(this); // <--- НОВОЕ
+      postService = PostService(this);
+
+      cacheService = CacheService(this); // <--- НОВОЕ
+      // Пытаемся подключиться к Redis
+      await cacheService.connect();
     } on Object catch (error, stackTrace) {
       logger.error('Ошибка при создании DI контейнера', error, stackTrace);
       rethrow;
