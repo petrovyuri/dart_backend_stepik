@@ -4,6 +4,7 @@ import 'package:auth/logger/logger.dart';
 import 'package:auth/service/crypto_service.dart';
 import 'package:auth/service/hash_service.dart';
 import 'package:auth/service/jwt_service.dart';
+import 'package:auth/service/user_service.dart';
 
 // DI контейнер хранит общие зависимости приложения и отвечает за их инициализацию.
 final class DiContainer {
@@ -25,7 +26,10 @@ final class DiContainer {
   /// Сервис для работы с JWT токенами.
   late final JwtService jwtService;
 
-  /// <--- Новое поле
+  /// Сервис для работы с пользователями.
+  late final UserService userService;
+
+  /// <--- Новое
 
   Future<void> load() async {
     try {
@@ -47,6 +51,8 @@ final class DiContainer {
       cryptoService = CryptoService(config);
       // Создаем сервис для работы с JWT токенами.
       jwtService = JwtService(this);
+      // Создаем сервис для работы с пользователями.
+      userService = UserService(this);
 
       /// <--- Новое
     } on Object catch (error, stackTrace) {
