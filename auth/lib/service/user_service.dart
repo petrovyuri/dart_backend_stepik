@@ -55,4 +55,19 @@ class UserService {
       rethrow;
     }
   }
+
+  /// Получает пользователя по id из базы данных.
+  /// [id] - id пользователя
+  /// Возвращает пользователя или null, если пользователь не найден
+  Future<User?> getUserById(int id) async {
+    try {
+      final user = await (di.database.select(
+        di.database.users,
+      )..where((user) => user.id.equals(id))).getSingleOrNull();
+      return user;
+    } catch (e, stackTrace) {
+      di.logger.error('Ошибка при получении пользователя: $e', e, stackTrace);
+      rethrow;
+    }
+  }
 }
