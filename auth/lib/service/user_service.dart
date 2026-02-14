@@ -96,4 +96,20 @@ class UserService {
       rethrow;
     }
   }
+
+  /// Удаляет пользователя из базы данных.
+  /// [id] - id пользователя
+  /// Возвращает количество удаленных строк или выбрасывает ошибку
+  Future<int> deleteUser(int id) async {
+    try {
+      final database = di.database;
+      // Вызываем операцию удаления в БД
+      final deletedCount = await (database.delete(database.users)..where((user) => user.id.equals(id))).go();
+      di.logger.info('Пользователь удален: $id');
+      return deletedCount;
+    } catch (e, stackTrace) {
+      di.logger.error('Ошибка при удалении пользователя: $e', e, stackTrace);
+      rethrow;
+    }
+  }
 }
