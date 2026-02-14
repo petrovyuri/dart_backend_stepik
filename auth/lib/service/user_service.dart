@@ -70,4 +70,30 @@ class UserService {
       rethrow;
     }
   }
+
+  /// Обновляет пользователя в базе данных.
+  /// [id] - id пользователя
+  /// [email] - email пользователя
+  /// [password] - пароль пользователя
+  /// Возвращает количество обновленных строк или выбрасывает ошибку
+  Future<int> updateUser(int id, String email, String password) async {
+    try {
+      // Хэшируем пароль (необратимо)
+      final hashedPassword = di.hashService.hashPassword(password);
+      // Шифруем email (обратимо)
+      final encryptedEmail = di.cryptoService.encryptData(email);
+      // Создаем объект пользователя для обновления
+      final userCompanion = UsersCompanion(email: Value(encryptedEmail), password: Value(hashedPassword));
+      final database = di.database;
+      // Вызываем операцию обновления в БД
+      final updatedCount = await (database.update(
+        database.users,
+      )..where((user) => user.id.equals(id))).write(userCompanion);
+      di.logger.info('Пользователь обновлен: $id');
+      return updatedCount;
+    } catch (e, stackTrace) {
+      di.logger.error('Ошибка при обновлении пользователя: $e', e, stackTrace);
+      rethrow;
+    }
+  }
 }
