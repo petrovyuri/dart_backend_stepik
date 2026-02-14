@@ -40,9 +40,11 @@ services:
       dockerfile: Dockerfile
     # Имя контейнера
     container_name: auth
-    # Маппинг портов: внешний_порт:внутренний_порт
-    ports:
-      - "${EXTERNAL_PORT}:${PORT}"
+    # # Маппинг портов: внешний_порт:внутренний_порт
+    # ports:
+    #   - "${EXTERNAL_PORT}:${PORT}"
+    expose:
+      - "${PORT}"
     # Переменные окружения для контейнера
     environment:
       # Хост базы данных
@@ -133,8 +135,10 @@ services:
       context: ./data
       dockerfile: Dockerfile
     container_name: data
-    ports:
-      - "${DATA_EXTERNAL_PORT}:${DATA_PORT}"
+    # ports:
+    #   - "${DATA_EXTERNAL_PORT}:${DATA_PORT}"
+    expose:
+      - "${DATA_PORT}"
     environment:
       - DB_HOST=${DATA_DB_HOST}
       - DB_PORT=${DATA_DB_PORT}
@@ -153,6 +157,18 @@ services:
     depends_on:
       - db_data
 
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    networks:
+      - my_network
+    depends_on:
+      - auth
+      - data
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
 # Секция определения сетей Docker
 # Сети позволяют контейнерам общаться друг с другом
 networks:

@@ -25,15 +25,15 @@ class AppHandler {
 
     // Основной роутер
     final mainRouter = Router()
-      ..get('/health', (request) => _healthCheckHandler(request, _di))
+      ..get('/data/health', (request) => _healthCheckHandler(request, _di))
       // Получение всех постов (пагинация)
-      ..get('/posts', (request) => _getPostsHandler(request, _di))
-      ..post('/posts', (request) => _createPostHandler(request, _di))
+      ..get('/data/posts', (request) => _getPostsHandler(request, _di))
+      ..post('/data/posts', (request) => _createPostHandler(request, _di))
       // <id> - это параметр, который будет передаваться в функцию _getPostHandler
-      ..get('/posts/<id>', (request, id) => _getPostHandler(request, _di, id))
-      ..delete('/posts/<id>', (request, id) => _deletePostHandler(request, _di, id))
+      ..get('/data/posts/<id>', (request, id) => _getPostHandler(request, _di, id))
+      ..delete('/data/posts/<id>', (request, id) => _deletePostHandler(request, _di, id))
       ..delete(
-        '/posts/user/<userId>', // <--- Новое
+        '/data/posts/user/<userId>', // <--- Новое
         (request, userId) => _deleteUserPostsHandler(request, _di, userId),
       );
 
