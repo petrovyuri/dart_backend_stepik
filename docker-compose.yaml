@@ -128,6 +128,31 @@ services:
       # Подключение к сети my_network для взаимодействия с другими сервисами
       - my_network
 
+  data:
+    build:
+      context: ./data
+      dockerfile: Dockerfile
+    container_name: data
+    ports:
+      - "${DATA_EXTERNAL_PORT}:${DATA_PORT}"
+    environment:
+      - DB_HOST=${DATA_DB_HOST}
+      - DB_PORT=${DATA_DB_PORT}
+      - DB_NAME=${DATA_DB_NAME}
+      - DB_USER=${DATA_DB_USER}
+      - DB_PASSWORD=${DATA_DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - INTERNAL_SECRET=${INTERNAL_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - HOST=${DATA_HOST}
+      - PORT=${DATA_PORT}
+      - IS_STAGE=${DATA_IS_STAGE}
+    networks:
+      - my_network
+    depends_on:
+      - db_data
+
 # Секция определения сетей Docker
 # Сети позволяют контейнерам общаться друг с другом
 networks:
