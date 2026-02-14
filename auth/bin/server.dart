@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:auth/config/config.dart';
+import 'package:auth/di/di_container.dart';
 import 'package:auth/logger/logger.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
@@ -26,14 +26,9 @@ void main(List<String> args) async {
   // Создаём логгер и пишем стартовое сообщение.
   final logger = AppLogger()..info('Сервер запущен');
 
-  // Создаём конфигурацию
-  final config = Config(logger: logger);
-  // Загружаем конфигурацию
-  await config.load();
-  // Подтягиваем stage-флаг в логгер.
-  logger.isStage = config.isStage;
-  // Показываем конфигурацию
-  config.showConfig();
+  // Создаём DI контейнер и загружаем конфигурацию.
+  final diContainer = DiContainer(logger: logger);
+  await diContainer.load();
 
   // Слушаем любой доступный интерфейс (удобно для контейнеров).
   final ip = InternetAddress.anyIPv4;
@@ -42,6 +37,6 @@ void main(List<String> args) async {
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router.call);
 
   // Запускаем HTTP-сервер на сконфигурированном порту.
-  final server = await serve(handler, ip, config.port);
+  final server = await serve(handler, ip, diContainer.config.port);
   print('Server listening on port ${server.port}');
 }
